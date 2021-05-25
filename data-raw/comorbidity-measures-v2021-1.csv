@@ -1,0 +1,41 @@
+"Searchable list of measures in the Elixhauser Comorbidity Software Refined for ICD-10-CM, v2021.1",,
+"Abbreviation 
+(SAS Data Element Name)",Comorbidity Description,Uses present on admission (POA) indicators for assignment?
+AIDS,Acquired immune deficiency syndrome ,No
+ALCOHOL,Alcohol abuse ,No
+ANEMDF,Deficiency anemias ,Yes
+ARTH,Arthropathies ,No
+BLDLOSS,Chronic blood loss anemia ,Yes
+CANCER_LEUK,Leukemia ,No
+CANCER_LYMPH,Lymphoma ,No
+CANCER_METS,Metastatic cancer ,No
+CANCER_NSITU,"Solid tumor without metastasis, in situ ",No
+CANCER_SOLID,"Solid tumor without metastasis, malignant ",No
+CBVD,Cerebrovascular disease,Yes
+CHF,Congestive heart failure ,Yes
+COAG,Coagulopathy ,Yes
+DEMENTIA,Dementia ,No
+DEPRESS,Depression,No
+DIAB_CX,Diabetes with chronic complications ,No
+DIAB_UNCX,Diabetes without chronic complications ,No
+DRUG_ABUSE,Drug abuse ,No
+HTN_CX,"Hypertension, complicated ",No
+HTN_UNCX,"Hypertension, uncomplicated ",No
+LIVER_MLD,"Liver disease, mild ",Yes
+LIVER_SEV,"Liver disease, moderate to severe ",Yes
+LUNG_CHRONIC,Chronic pulmonary disease ,No
+NEURO_MOVT,Neurological disorders affecting movement ,Yes
+NEURO_OTH,Other neurological disorders,Yes
+NEURO_SEIZ,Seizures and epilepsy ,Yes
+OBESE,Obesity ,No
+PARALYSIS,Paralysis ,Yes
+PERIVASC,Peripheral vascular disease ,No
+PSYCHOSES,Psychoses ,Yes
+PULMCIRC,Pulmonary circulation disease ,Yes
+RENLFL_MOD,"Renal failure, moderate ",Yes
+RENLFL_SEV,"Renal failure, severe ",Yes
+THYROID_HYPO,Hypothyroidism ,No
+THYROID_OTH,Other thyroid disorders,No
+ULCER_PEPTIC,Peptic ulcer with bleeding ,Yes
+VALVE,Valvular disease ,Yes
+WGHTLOSS,Weight loss ,Yes

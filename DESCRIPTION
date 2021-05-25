@@ -1,0 +1,26 @@
+Package: AHRQComorb
+Type: Package
+Title: Convert diagnosis codes to comorbidity lists
+Version: 0.0.0.1000
+Authors@R: 
+    person(given = "Robert",
+           family = "Link",
+           role = c("aut", "cre", "ard"),
+           email = "rl8z@virginia.edu",
+           comment = c(ORCID = "0000-0002-7071-248X"))
+Description: Provides functions to convert tables of patients and diagnosis codes
+    into tables of comorbidities by patient, using the definitions provided by
+    the US Agency for Healthcare Research and Quality (AHRQ).
+License: GPL-2
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 2.10)
+RoxygenNote: 7.1.1
+Imports: 
+    dplyr,
+    stringr,
+    tibble
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
