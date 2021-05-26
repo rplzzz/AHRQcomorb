@@ -1,7 +1,7 @@
 Package: AHRQComorb
 Type: Package
 Title: Convert diagnosis codes to comorbidity lists
-Version: 0.0.0.1000
+Version: 0.0.0.1010
 Authors@R: 
     person(given = "Robert",
            family = "Link",
@@ -20,7 +20,8 @@ RoxygenNote: 7.1.1
 Imports: 
     dplyr,
     stringr,
-    tibble
+    tibble,
+    tidyr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
