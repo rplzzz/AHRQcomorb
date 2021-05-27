@@ -3,5 +3,8 @@
 export(claimpivot)
 export(comorb)
 export(mergekeys)
+export(poa_cms)
+export(poa_cms2)
+export(poa_natural)
 export(splitkeys)
 importFrom(stats,na.pass)

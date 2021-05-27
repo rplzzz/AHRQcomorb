@@ -16,13 +16,16 @@
 #'
 #' If the POA column is of type character, it will be converted to an integer 0/1
 #' value.  This behavior can be suppressed by setting \code{poaconv} to \code{FALSE}.
-#' By default, strings starting with 'T' or 'Y' will be treated as true (1), and
-#' strings starting with 'F' or 'N' will be treated as false (0).  If you happen
-#' to know the strings used to represent true and false in your dataset, you can
-#' pass them as \code{poastrings} (vector of length 2, with the string for true first).
-#' Either way, entries that match neither will be assigned the value NA.  Optionally,
+#' By default, the CMS convention of using 'Y' for true will be used, with all other
+#' values deemed to be false.
+#' Other conventions can be used by supplying a function as the \code{poahandle}
+#' argument.  Several such functions for commonly encountered conventions are built
+#' in (\code{\link{poa_functions}}), or a custom function can be supplied.
+#'
+#' Entries that decode to neither true nor false will be assigned the value NA.  Optionally,
 #' the function can raise an error if this happens (pass \code{\link[stats]{na.fail}}
-#' in the \code{nahandle} parameter.)
+#' in the \code{nahandle} parameter.)  This checking will also catch diagnosis code
+#' fields for which no corresponding POA code was passed.
 #'
 #' @param tbl Table of data in wide format
 #' @param idcols Name of the columns used as identifiers. If more than one, they will
@@ -32,15 +35,13 @@
 #' \code{'ICD_DGNS_CD'}).
 #' @param poastem Character stem for the names of the POA fields (default is
 #' \code{'CLM_POA_IND_SW'})
-#' @param poastrings Strings used to represent true and false in the POA field. If
-#' supplied, it should be in the form \code{c(trueval, falseval)}.  If omitted a
-#' reasonable guess will be used.
+#' @param poahandle Function for converting strings in POA fields to POA indicators (see details).
 #' @param nahandle What to do with POA values that don't match either the true
 #' or false strings.  Default is to leave them as \code{NA} in the output.
 #' @importFrom stats na.pass
 #' @export
 claimpivot <- function(tbl, idcols, diagstem='ICD_DGNS_CD', poastem='CLM_POA_IND_SW',
-                       poastrings=NULL, poaconv=TRUE, nahandle=na.pass)
+                       poahandle=poa_cms, poaconv=TRUE, nahandle=na.pass)
 {
   if(length(idcols) > 1) {
     tbl <- mergekeys(tbl, idcols)
@@ -70,19 +71,7 @@ claimpivot <- function(tbl, idcols, diagstem='ICD_DGNS_CD', poastem='CLM_POA_IND
                                 values_to = 'poa', values_drop_na = TRUE)
 
   if(poaconv) {
-    ## Convert POA strings to boolean values, coded as integers
-    if(is.null(poastrings)) {
-      truevals <- grepl('^[ty1]', poatbl$poa, ignore.case = TRUE)
-      falsevals <- grepl('^[fn0]', poatbl$poa, ignore.case = TRUE)
-    }
-    else {
-      truevals <- poatbl$poa == poastrings[1]
-      falsevals <- poatbl$poa == poastrings[2]
-    }
-
-    poatbl$poa <- ifelse(truevals, 1L,
-                         ifelse(falsevals, 0L,
-                                NA_integer_))
+    poatbl$poa <- poahandle(poatbl$poa)
   }
 
   ## join the two tables and check for NA values, if required.

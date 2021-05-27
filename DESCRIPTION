@@ -1,7 +1,7 @@
 Package: AHRQComorb
 Type: Package
 Title: Convert diagnosis codes to comorbidity lists
-Version: 0.0.0.1020
+Version: 0.0.0.1030
 Authors@R: 
     person(given = "Robert",
            family = "Link",

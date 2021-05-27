@@ -9,7 +9,7 @@ claimpivot(
   idcols,
   diagstem = "ICD_DGNS_CD",
   poastem = "CLM_POA_IND_SW",
-  poastrings = NULL,
+  poahandle = poa_cms,
   poaconv = TRUE,
   nahandle = na.pass
 )
@@ -27,9 +27,7 @@ be joined into a single synthetic key called 'id' (using \code{\link{mergekeys}}
 \item{poastem}{Character stem for the names of the POA fields (default is
 \code{'CLM_POA_IND_SW'})}
 
-\item{poastrings}{Strings used to represent true and false in the POA field. If
-supplied, it should be in the form \code{c(trueval, falseval)}.  If omitted a
-reasonable guess will be used.}
+\item{poahandle}{Function for converting strings in POA fields to POA indicators (see details).}
 
 \item{nahandle}{What to do with POA values that don't match either the true
 or false strings.  Default is to leave them as \code{NA} in the output.}
@@ -52,11 +50,14 @@ with its POA, and the ID will be replicated for each row.
 
 If the POA column is of type character, it will be converted to an integer 0/1
 value.  This behavior can be suppressed by setting \code{poaconv} to \code{FALSE}.
-By default, strings starting with 'T' or 'Y' will be treated as true (1), and
-strings starting with 'F' or 'N' will be treated as false (0).  If you happen
-to know the strings used to represent true and false in your dataset, you can
-pass them as \code{poastrings} (vector of length 2, with the string for true first).
-Either way, entries that match neither will be assigned the value NA.  Optionally,
+By default, the CMS convention of using 'Y' for true will be used, with all other
+values deemed to be false.
+Other conventions can be used by supplying a function as the \code{poahandle}
+argument.  Several such functions for commonly encountered conventions are built
+in (\code{\link{poa_functions}}), or a custom function can be supplied.
+
+Entries that decode to neither true nor false will be assigned the value NA.  Optionally,
 the function can raise an error if this happens (pass \code{\link[stats]{na.fail}}
-in the \code{nahandle} parameter.)
+in the \code{nahandle} parameter.)  This checking will also catch diagnosis code
+fields for which no corresponding POA code was passed.
 }
