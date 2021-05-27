@@ -1,6 +1,6 @@
 
-clmall <- readRDS(here::here('tests','testthat','wide-test-data.rds'))
-cllall <- readRDS(here::here('tests','testthat','long-test-data.rds'))
+clmall <- readRDS('wide-test-data.rds')
+cllall <- readRDS('long-test-data.rds')
 
 test_that('Single claim pivot works correctly', {
   clm1 <- clmall[1,]

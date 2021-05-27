@@ -30,6 +30,8 @@
 #' @export
 comorb <- function(tbl, diagcol = 'diagnosis', poacol = 'poa', idcol=NULL, dotless = FALSE)
 {
+  comorb_description <- AHRQComorb::comorb_description
+
   if(is.null(idcol)) {
     tbl <- dplyr::bind_rows(id=1, tbl[,c(diagcol, poacol)])
   }

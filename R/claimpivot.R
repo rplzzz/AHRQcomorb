@@ -38,6 +38,7 @@
 #' @param poahandle Function for converting strings in POA fields to POA indicators (see details).
 #' @param nahandle What to do with POA values that don't match either the true
 #' or false strings.  Default is to leave them as \code{NA} in the output.
+#' @param poaconv Flag indicating whether to convert POA values, or just leave them as-is.
 #' @importFrom stats na.pass
 #' @export
 claimpivot <- function(tbl, idcols, diagstem='ICD_DGNS_CD', poastem='CLM_POA_IND_SW',
