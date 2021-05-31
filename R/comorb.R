@@ -23,7 +23,8 @@
 #' @param tbl Table of input data
 #' @param diagcol Column containing the diagnosis codes.  Default is 'diagnosis'.
 #' @param poacol Column containing the present-on-admission flags.  Default is 'poa'.
-#' @param idcol Column containing the id variable (see details).  Default is none.
+#' @param idcol Column containing the id variable (see details).  Default is 'id'.
+#' Passing \code{NULL} will treat each row as a separate case.
 #' @param dotless If \code{TRUE}, assume the diagnosis codes are already in dotless
 #' format. Otherwise, the codes will be converted to dotless. Setting this flag
 #' can save a little time if you are certain your codes are already dotless.
@@ -33,61 +34,71 @@ comorb <- function(tbl, diagcol = 'diagnosis', poacol = 'poa', idcol=NULL, dotle
   comorb_description <- AHRQComorb::comorb_description
 
   if(is.null(idcol)) {
-    tbl <- dplyr::bind_rows(id=1, tbl[,c(diagcol, poacol)])
+    tbl <- dplyr::bind_cols(id=1, tbl[,c(diagcol, poacol)])
+    idcol <- 'id'
+    rtnid <- FALSE
   }
   else {
     tbl <- tbl[, c(idcol, diagcol, poacol)]
+    rtnid <- TRUE
   }
-  names(tbl) <- c('id','diagnosis', 'poa')
+  #names(tbl) <- c('id','diagnosis', 'poa')
 
   if(!dotless) {
-    tbl[['diagnosis']] <- stringr::str_replace(tbl[['diagnosis']], '[.]', '')
+    tbl[[diagcol]] <- stringr::str_replace(tbl[[diagcol]], '[.]', '')
   }
 
   codes <- icd10_comorb[-1]  ## drop the column with the diagnosis description
-  rslt <- dplyr::inner_join(tbl, codes, by='diagnosis')
+  joinby <- 'diagnosis'
+  names(joinby) <- diagcol
+  rslt <- dplyr::inner_join(tbl, codes, by=joinby)
 
   if(nrow(tbl) == 0) {
     ## No diagnosis codes matched any comorbidities; record 0 for all comorbidities
     ## for each id grouping
-    rslt <- tibble::tibble(id=unique(tbl[['id']]))
+    rslt <- tibble::tibble(id=unique(tbl[[idcol]]))
     for(cm in comorb_description[['comorbidity']]) {
       rslt[[cm]] <- 0
     }
-    if(is.null(idcol)) {
-      return(rslt[comorb_description[['comorbidity']]])   # Return just the comorbidity columns
+    if(rtnid) {
+      return(rslt)
     }
     else {
-      return(rslt)
+      return(rslt[comorb_description[['comorbidity']]])   # Return just the comorbidity columns
     }
   }
 
   ## Check POA for each condition, if necessary.
   poacond <- comorb_description$comorbidity[comorb_description$poa]
   for (cond in poacond) {
-    rslt[[cond]] <- rslt[[cond]] * rslt[['poa']]
+    rslt[[cond]] <- rslt[[cond]] * rslt[[poacol]]
   }
 
-  ## Aggregate the results by id, if necessary.
-  if(!is.null(idcol)) {
-    rsplt <- split(rslt, rslt[['id']], drop=TRUE)
-    rslt <- do.call(rbind,
-      lapply(rsplt, function(d) {
-        id <- d[1,1]
-        ## First three columns are id, diagnosis, and poa; the rest are comorbidities
-        comorbs <- t(apply(as.matrix(d[-c(1,2,3)]),2, sum) > 0)
-        cbind(id=id, comorbs)
-      })
-    )
-  }
+  ## Aggregate the results by id.
+  rsplt <- split(rslt, rslt[[idcol]], drop=TRUE)
+  rslt <- do.call(rbind,
+                  lapply(rsplt, function(d) {
+                    id <- d[1,1]
+                    ## First three columns are id, diagnosis, and poa; the rest are comorbidities
+                    comorbs <- t(apply(as.matrix(d[-c(1,2,3)]),2, intor))
+                    r <- cbind(id=id, as.data.frame(comorbs))
+                    colnames(r)[1] <- idcol
+                    r
+                  })
+  )
 
   ## Correct clinically similar comorbidities
-  rslt[,'diab_uncx'] <- rslt[,'diab_uncx'] & !rslt[,'diab_cx']
-  rslt[,'htn_uncx'] <- rslt[,'htn_uncx'] & !rslt[,'htn_cx']
-  rslt[,'liver_mld'] <- rslt[,'liver_mld'] & !rslt[,'liver_sev']
-  rslt[,'renlfl_mod'] <- rslt[,'renlfl_mod'] & !rslt[,'renlfl_sev']
-  rslt[,'cancer_nsitu'] <- rslt[,'cancer_nsitu'] & !(rslt[,'cancer_solid'] | rslt[,'cancer_mets'])
-  rslt[,'cancer_solid'] <- rslt[,'cancer_solid'] & !rslt[,'cancer_mets']
+  rslt[,'diab_uncx'] <- pintand(rslt[,'diab_uncx'], !rslt[,'diab_cx'])
+  rslt[,'htn_uncx'] <- pintand(rslt[,'htn_uncx'], !rslt[,'htn_cx'])
+  rslt[,'liver_mld'] <- pintand(rslt[,'liver_mld'], !rslt[,'liver_sev'])
+  rslt[,'renlfl_mod'] <- pintand(rslt[,'renlfl_mod'], !rslt[,'renlfl_sev'])
+  rslt[,'cancer_nsitu'] <- pintand(rslt[,'cancer_nsitu'], !(rslt[,'cancer_solid'] | rslt[,'cancer_mets']))
+  rslt[,'cancer_solid'] <- pintand(rslt[,'cancer_solid'], !rslt[,'cancer_mets'])
 
-  as.data.frame(rslt)
+  if(rtnid) {
+    rslt
+  }
+  else {
+    rslt[comorb_description[['comorbidity']]]
+  }
 }

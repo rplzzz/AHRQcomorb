@@ -19,7 +19,8 @@ comorb(
 
 \item{poacol}{Column containing the present-on-admission flags.  Default is 'poa'.}
 
-\item{idcol}{Column containing the id variable (see details).  Default is none.}
+\item{idcol}{Column containing the id variable (see details).  Default is 'id'.
+Passing \code{NULL} will treat each row as a separate case.}
 
 \item{dotless}{If \code{TRUE}, assume the diagnosis codes are already in dotless
 format. Otherwise, the codes will be converted to dotless. Setting this flag
