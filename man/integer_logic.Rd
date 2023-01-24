@@ -23,9 +23,9 @@ are actually used in package functions.
 }
 \section{Functions}{
 \itemize{
-\item \code{intor}: Vector integer or
+\item \code{intor()}: Vector integer or
 
-\item \code{pintand}: Parallel integer and
+\item \code{pintand()}: Parallel integer and
+
 }}
-
 \keyword{internal}
