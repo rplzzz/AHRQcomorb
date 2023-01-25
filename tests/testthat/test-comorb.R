@@ -9,7 +9,7 @@ p2 <- data.frame(id=2,
 ## Test some multiple comorbidity conditions, as well as some overlapping conditions
 p3 <- data.frame(id=3,
                  diagnosis=c('I132', 'K7010', 'I119', 'B189'),
-                 # chf, htn_cx, renlfl_sev, alcohol, liver_mld (check duplicates are handled)
+                 # hf, htn_cx, renlfl_sev, alcohol, liver_mld (check duplicates are handled)
                  poa=1)
 ## test clinically similar conditions
 p4 <- data.frame(id=4,
@@ -32,6 +32,7 @@ p8 <- data.frame(id=8,
                  # liver_mld, diab_uncx, htn_uncx, renlfl_mod, cancer_nsitu
                  poa=1)
 
+
 pall <- dplyr::bind_rows(p1,p2,p3,p4,p5,p6,p7,p8)
 
 ## empty vector for creating results
@@ -41,14 +42,14 @@ names(empty) <- comorb_description$comorbidity
 ## result vectors for the test patients
 r1 <- empty ; r1[c('alcohol','depress','wghtloss')] <- 1L
 r2 <- empty ; r2[c('alcohol','depress')] <- 1L
-r3 <- empty ; r3[c('chf','htn_cx','renlfl_sev','alcohol','liver_mld')] <- 1L
+r3 <- empty ; r3[c('hf','htn_cx','renlfl_sev','alcohol','liver_mld')] <- 1L
 r4 <- empty ; r4[c('liver_sev','diab_cx','htn_cx','renlfl_sev','cancer_mets')] <- 1L
 r5 <- empty ; r5['cancer_mets'] <- 1L
 r6 <- r5
 r7 <- empty ; r7['cancer_solid'] <- 1L
 r8 <- empty ; r8[c('liver_mld', 'diab_uncx', 'htn_uncx', 'renlfl_mod', 'cancer_nsitu')] <- 1L
 
-rall <- empty; rall[c('alcohol', 'depress', 'wghtloss', 'chf', 'htn_cx', 'renlfl_sev', 'liver_sev',
+rall <- empty; rall[c('alcohol', 'depress', 'wghtloss', 'hf', 'htn_cx', 'renlfl_sev', 'liver_sev',
                       'diab_cx', 'cancer_mets')] <- 1L
 
 
