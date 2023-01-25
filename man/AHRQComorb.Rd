@@ -18,21 +18,25 @@ datasets containing similar data.
 
 The main function for converting diagnosis codes is \code{\link{comorb}}. It takes
 a long-format table of diagnosis codes, one code (and POA indicator)
-per row.  For example:\preformatted{id          diagnosis   poa
+per row.  For example:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{id          diagnosis   poa
 <chr>       <chr>     <dbl>
 "15\\u001f1" I2510         1
 "15\\u001f1" I959          1
 "15\\u001f1" J449          1
 "15\\u001f1" E119          1
 "15\\u001f1" R001          1
-}
+}\if{html}{\out{</div>}}
 
 The diagnosis column must contain ICD-10 codes, and the poa column
 must be a numeric column consisting entirely of 1 (present on
 admission) and 0 (not present on admission) values.  The id column
 indicates which rows belong to a single case (e.g., a patient, or an
-encounter).  If this table were stored in \code{dtbl}, you would run:\preformatted{comorb(dtbl, idcol='id')
-}
+encounter).  If this table were stored in \code{dtbl}, you would run:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{comorb(dtbl, idcol='id')
+}\if{html}{\out{</div>}}
 
 The result would be a table with a row for each unique value of the id
 variable (just one, in this short example), and a series of columns,

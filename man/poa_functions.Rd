@@ -46,10 +46,10 @@ as true; N, F, and 0 as false, and everything else as "other".
 }
 \section{Functions}{
 \itemize{
-\item \code{poa_cms}: CMS POA convention, strict interpretation
+\item \code{poa_cms()}: CMS POA convention, strict interpretation
 
-\item \code{poa_cms2}: CMS POA convention
+\item \code{poa_cms2()}: CMS POA convention
 
-\item \code{poa_natural}: A default convention that reflects common usages.
+\item \code{poa_natural()}: A default convention that reflects common usages.
+
 }}
-

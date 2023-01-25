@@ -27,8 +27,8 @@ Convenience functions for merging and separating keys
 }
 \section{Functions}{
 \itemize{
-\item \code{mergekeys}: Merge two or more columns into a synthetic key
+\item \code{mergekeys()}: Merge two or more columns into a synthetic key
 
-\item \code{splitkeys}: Separate synthetic key into two or more columns
+\item \code{splitkeys()}: Separate synthetic key into two or more columns
+
 }}
-

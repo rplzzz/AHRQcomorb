@@ -53,7 +53,7 @@ comorb <- function(tbl, diagcol = 'diagnosis', poacol = 'poa', idcol=NULL, dotle
   names(joinby) <- diagcol
   rslt <- dplyr::inner_join(tbl, codes, by=joinby)
 
-  if(nrow(tbl) == 0) {
+  if(nrow(rslt) == 0) {
     ## No diagnosis codes matched any comorbidities; record 0 for all comorbidities
     ## for each id grouping
     rslt <- tibble::tibble(id=unique(tbl[[idcol]]))
