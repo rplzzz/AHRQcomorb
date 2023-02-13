@@ -20,7 +20,6 @@ RoxygenNote: 7.2.1
 Imports: 
     dplyr (>= 1.0),
     stringr (>= 1.4),
-    tibble (>= 3.0),
     tidyr (>= 1.0)
 Suggests: 
     testthat (>= 3.0.0),
