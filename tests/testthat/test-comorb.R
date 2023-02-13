@@ -1,3 +1,8 @@
+## No comorbidity conditions at all
+p0 <- data.frame(id=0,
+                 diagnosis=c('THX1138'),   # guaranteed not to be in the table
+                 poa=1
+                 )
 ## patient with several unrelated comorbidities
 p1 <- data.frame(id=1,
                  diagnosis=c('F10120', 'F0631', 'E441'),  # alcohol, depress, wghtloss
@@ -40,6 +45,7 @@ empty <- rep(0L, nrow(comorb_description))
 names(empty) <- comorb_description$comorbidity
 
 ## result vectors for the test patients
+r0 <- empty
 r1 <- empty ; r1[c('alcohol','depress','wghtloss')] <- 1L
 r2 <- empty ; r2[c('alcohol','depress')] <- 1L
 r3 <- empty ; r3[c('hf','htn_cx','renlfl_sev','alcohol','liver_mld')] <- 1L
@@ -84,6 +90,16 @@ test_that('Comorbidities are assigned correctly in table with no id', {
   expect_equal(simplify2array(rslt[1,]), rall)
 })
 
+test_that('Cases with no comorbidities are handled correctly', {
+  p <- dplyr::bind_rows(p1, p0, p3)
+  rslt <- comorb(p, idcol='id')
+
+  cs <- comorb_description$comorbidity
+  expect_equal(simplify2array(rslt[1,cs]), r1)
+  expect_equal(simplify2array(rslt[2,cs]), r0)
+  expect_equal(simplify2array(rslt[3,cs]), r3)
+
+})
 
 #### check diagnoses that were removed from comorbidities in recent updates
 px1 <- data.frame(id = 1,

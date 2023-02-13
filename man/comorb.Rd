@@ -8,7 +8,7 @@ comorb(
   tbl,
   diagcol = "diagnosis",
   poacol = "poa",
-  idcol = NULL,
+  idcol = "id",
   dotless = FALSE
 )
 }
@@ -20,7 +20,7 @@ comorb(
 \item{poacol}{Column containing the present-on-admission flags.  Default is 'poa'.}
 
 \item{idcol}{Column containing the id variable (see details).  Default is 'id'.
-Passing \code{NULL} will treat each row as a separate case.}
+Passing \code{NULL} will treat the entire table as a single case.}
 
 \item{dotless}{If \code{TRUE}, assume the diagnosis codes are already in dotless
 format. Otherwise, the codes will be converted to dotless. Setting this flag

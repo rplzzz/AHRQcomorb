@@ -24,14 +24,15 @@
 #' @param diagcol Column containing the diagnosis codes.  Default is 'diagnosis'.
 #' @param poacol Column containing the present-on-admission flags.  Default is 'poa'.
 #' @param idcol Column containing the id variable (see details).  Default is 'id'.
-#' Passing \code{NULL} will treat each row as a separate case.
+#' Passing \code{NULL} will treat the entire table as a single case.
 #' @param dotless If \code{TRUE}, assume the diagnosis codes are already in dotless
 #' format. Otherwise, the codes will be converted to dotless. Setting this flag
 #' can save a little time if you are certain your codes are already dotless.
 #' @export
-comorb <- function(tbl, diagcol = 'diagnosis', poacol = 'poa', idcol=NULL, dotless = FALSE)
+comorb <- function(tbl, diagcol = 'diagnosis', poacol = 'poa', idcol='id', dotless = FALSE)
 {
   comorb_description <- AHRQComorb::comorb_description
+  comorbs <- comorb_description$comorbidity
 
   if(is.null(idcol)) {
     tbl <- dplyr::bind_cols(id=1, tbl[,c(diagcol, poacol)])
@@ -51,21 +52,12 @@ comorb <- function(tbl, diagcol = 'diagnosis', poacol = 'poa', idcol=NULL, dotle
   codes <- icd10_comorb[-1]  ## drop the column with the diagnosis description
   joinby <- 'diagnosis'
   names(joinby) <- diagcol
-  rslt <- dplyr::inner_join(tbl, codes, by=joinby)
+  rslt <- dplyr::left_join(tbl, codes, by=joinby)
 
-  if(nrow(rslt) == 0) {
-    ## No diagnosis codes matched any comorbidities; record 0 for all comorbidities
-    ## for each id grouping
-    rslt <- tibble::tibble(id=unique(tbl[[idcol]]))
-    for(cm in comorb_description[['comorbidity']]) {
-      rslt[[cm]] <- 0
-    }
-    if(rtnid) {
-      return(rslt)
-    }
-    else {
-      return(rslt[comorb_description[['comorbidity']]])   # Return just the comorbidity columns
-    }
+  for(col in comorbs) {
+    ## If a code is not found, it will produce a row of NA values. Replace these
+    ## with zeros to indicate that none of the comorbidities are present.
+    rslt[[col]][is.na(rslt[[col]])] <- 0
   }
 
   ## Check POA for each condition, if necessary.
@@ -75,7 +67,8 @@ comorb <- function(tbl, diagcol = 'diagnosis', poacol = 'poa', idcol=NULL, dotle
   }
 
   ## Aggregate the results by id.
-  rsplt <- split(rslt, rslt[[idcol]], drop=TRUE)
+  spltkey <- factor(rslt[[idcol]], levels=unique(rslt[[idcol]], ordered=TRUE))
+  rsplt <- split(rslt, spltkey, drop=TRUE)
   rslt <- do.call(rbind,
                   lapply(rsplt, function(d) {
                     id <- d[1,1]
